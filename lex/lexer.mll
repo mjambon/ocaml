@@ -58,13 +58,6 @@ let handle_lexical_error fn arg lexbuf =
   with Lexical_error (msg, "", 0, 0) ->
     raise(Lexical_error(msg, file, line, column))
 
-let warning lexbuf msg =
-  let p = Lexing.lexeme_start_p lexbuf in
-  Printf.eprintf "ocamllex warning:\nFile \"%s\", line %d, character %d: %s.\n"
-    p.Lexing.pos_fname p.Lexing.pos_lnum
-    (p.Lexing.pos_cnum - p.Lexing.pos_bol + 1) msg;
-  flush stderr
-
 let hex_digit_value d =
   let d = Char.code d in
   if d >= 97 then d - 87 else
@@ -251,7 +244,9 @@ and string in_pattern = parse
       string in_pattern lexbuf }
   | '\\' (_ as c)
     { if in_pattern = Pattern then
-        warning lexbuf
+        Warning.emit
+          (Warning.get_conf ()).illegal_backslash
+          (location_of_lexeme lexbuf)
           (Printf.sprintf "illegal backslash escape in string: '\\%c'" c) ;
       store_string_char '\\' ;
       store_string_char c ;
@@ -260,7 +255,10 @@ and string in_pattern = parse
     { raise(Lexical_error("unterminated string", "", 0, 0)) }
   | '\013'* '\010' as s
     { if in_pattern <> Comment then
-        warning lexbuf (Printf.sprintf "unescaped newline in string") ;
+        Warning.emit
+          (Warning.get_conf ()).unescaped_newline
+          (location_of_lexeme lexbuf)
+          (Printf.sprintf "unescaped newline in string") ;
       store_string_chars s;
       incr_loc lexbuf 0;
       string in_pattern lexbuf }

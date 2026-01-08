@@ -7890,21 +7890,26 @@ lex/cset.cmx : \
     lex/cset.cmi
 lex/cset.cmi :
 lex/exhaustiveness.cmo : \
+    lex/warning.cmi \
     lex/syntax.cmi \
     lex/lexgen.cmi \
     lex/exhaustiveness.cmi
 lex/exhaustiveness.cmx : \
+    lex/warning.cmx \
     lex/syntax.cmx \
     lex/lexgen.cmx \
     lex/exhaustiveness.cmi
 lex/exhaustiveness.cmi : \
+    lex/warning.cmi \
     lex/syntax.cmi \
     lex/lexgen.cmi
 lex/lexer.cmo : \
+    lex/warning.cmi \
     lex/syntax.cmi \
     lex/parser.cmi \
     lex/lexer.cmi
 lex/lexer.cmx : \
+    lex/warning.cmx \
     lex/syntax.cmx \
     lex/parser.cmx \
     lex/lexer.cmi
@@ -7923,6 +7928,7 @@ lex/lexgen.cmx : \
 lex/lexgen.cmi : \
     lex/syntax.cmi
 lex/main.cmo : \
+    lex/warning.cmi \
     lex/syntax.cmi \
     lex/parser.cmi \
     lex/outputbis.cmi \
@@ -7935,6 +7941,7 @@ lex/main.cmo : \
     lex/common.cmi \
     lex/main.cmi
 lex/main.cmx : \
+    lex/warning.cmx \
     lex/syntax.cmx \
     lex/parser.cmx \
     lex/outputbis.cmx \
@@ -7997,6 +8004,14 @@ lex/table.cmo : \
 lex/table.cmx : \
     lex/table.cmi
 lex/table.cmi :
+lex/warning.cmo : \
+    lex/syntax.cmi \
+    lex/warning.cmi
+lex/warning.cmx : \
+    lex/syntax.cmx \
+    lex/warning.cmi
+lex/warning.cmi : \
+    lex/syntax.cmi
 tools/cmpbyt.cmo : \
     bytecomp/bytesections.cmi \
     tools/cmpbyt.cmi

@@ -37,11 +37,31 @@ let specs =
     " Output code that does not use the Lexing module built-in automata \
      interpreter";
    "-o", Arg.String (fun x -> output_name := Some x),
-    " <file>  Set output file name to <file>";
+    "<file>  Set output file name to <file>";
    "-q", Arg.Set Common.quiet_mode, " Do not display informational messages";
    "-v",  Arg.Unit print_version_string, " Print version and exit";
    "-version",  Arg.Unit print_version_string, " Print version and exit";
    "-vnum",  Arg.Unit print_version_num, " Print version number and exit";
+   "-warn-error", Arg.String Warning.add_warn_error_warnings,
+   "<warning1,...>
+    Turn the specified warnings into fatal errors. \
+    Same syntax as '-warn-off'. This option exists since ocamllex 5.5.";
+   "-warn-off", Arg.String Warning.add_warn_off_warnings,
+   "<warning1,...>
+    Disable the specified warnings, identified by a list of comma-separated \
+    identifiers. Unknown warnings are ignored silently for compatibility \
+    with future and past versions of ocamllex. \
+    Valid warning identifiers are:
+      - 'illegal-backslash': illegal backslash escape in string
+      - 'unescaped-newline': unescaped newline in string
+      - 'missing-case': rule <name> is not exhaustive
+      - 'all': the set of all warnings
+    By default, all the warnings above are enabled. \
+    This option exists since ocamllex 5.5.";
+   "-warn-on", Arg.String Warning.add_warn_on_warnings,
+   "<warning1,...>
+    Enable the specified warnings. Same syntax as '-warn-off'. \
+    This option exists since ocamllex 5.5.";
   ]
 
 let _ =
@@ -72,9 +92,10 @@ let main () =
     {Lexing.pos_fname = source_name; Lexing.pos_lnum = 1;
      Lexing.pos_bol = 0; Lexing.pos_cnum = 0};
   try
+    let warning_conf = Warning.get_conf () in
     let def = Parser.lexer_definition Lexer.main lexbuf in
     let (entries, transitions) = Lexgen.make_dfa def.entrypoints in
-    Exhaustiveness.check transitions entries;
+    Exhaustiveness.check warning_conf transitions entries;
     if !ml_automata then begin
       Outputbis.output_lexdef
         ic oc tr

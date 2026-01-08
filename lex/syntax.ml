@@ -45,6 +45,11 @@ let location_of_positions (a : Lexing.position) (b : Lexing.position)
     end_col;
   }
 
+let location_of_lexeme (lexbuf : Lexing.lexbuf) =
+  location_of_positions
+    (Lexing.lexeme_start_p lexbuf)
+    (Lexing.lexeme_end_p lexbuf)
+
 type regular_expression =
     Epsilon
   | Characters of Cset.t
@@ -84,19 +89,3 @@ let show_location loc =
     lines
     loc.start_col
     loc.end_col
-
-(*
-   Roughly the same format as Lexer.warning.
-   TODO: reuse code to ensure consistency?
-
-   - We could have command-line options to enable or disable
-     warnings, or make them fatal if desired.
-   - It would be nice to use the same function as the OCaml compilers
-     to print and highlight the affected snippet of code.
-*)
-let print_warning loc msg =
-  Printf.eprintf
-    "ocamllex warning:\n\
-     %s: %s\n"
-    (show_location loc) msg;
-  flush stderr
