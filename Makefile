@@ -1699,6 +1699,7 @@ ocamllex_LIBRARIES =
 ocamllex_SOURCES = $(addprefix lex/,\
   cset.mli cset.ml \
   syntax.mli syntax.ml \
+  warning.mli warning.ml \
   parser.mly \
   lexer.mli lexer.mll \
   table.mli table.ml \
